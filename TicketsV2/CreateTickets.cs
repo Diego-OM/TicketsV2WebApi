@@ -48,7 +48,7 @@ namespace TicketsV2
                 blobService.UploadBlob($"{payload._EventName}", ticket);
             }
 
-            return new OkObjectResult("Tickets Generated");
+            return new OkObjectResult(JsonConvert.SerializeObject("Tickets Generated"));
 
         }
     }
