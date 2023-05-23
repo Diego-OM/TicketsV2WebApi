@@ -35,11 +35,13 @@ namespace TicketsV2.Services
 
             var qrCodeGenerator = new QRCodeGenerator();
 
-            var data = qrCodeGenerator.CreateQrCode("ENCODED TEXT", QRCodeGenerator.ECCLevel.Q);
+            var blobPayload = new BlobPayload() { TicketID = Guid.NewGuid(), EventID = Guid.NewGuid(), EventName = ticket._EventName, };
+
+            var data = qrCodeGenerator.CreateQrCode(JsonConvert.SerializeObject(blobPayload), QRCodeGenerator.ECCLevel.Q);
 
             SvgQRCode qrCode = new SvgQRCode(data);
             
-            return qrCode.GetGraphic(1);
+            return qrCode.GetGraphic(3);
         }
 
         internal static void SaveTicket(List<string> ticketList)
