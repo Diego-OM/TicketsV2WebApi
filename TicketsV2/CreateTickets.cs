@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using TicketsV2.Services;
 using TicketsV2.Interfaces;
 using TicketsV2.Models;
+using System.Collections.Generic;
 
 namespace TicketsV2
 {
@@ -26,9 +27,28 @@ namespace TicketsV2
 
             var payload = JsonConvert.DeserializeObject<Ticket>(requestBody);
 
-            var ticket = QRService.CreateTicket(payload);
+            var ticketList = new List<string>();
 
-            return new OkObjectResult(ticket);
+            if(payload._TicketAmount > 1)
+            {
+                for (int i = 0; i < payload._TicketAmount; i++)
+                {
+                    ticketList.Add(QRService.CreateTicket(payload));
+                }
+            }
+            else
+            {
+                ticketList.Add(QRService.CreateTicket(payload));
+            }
+
+            BlobService blobService = new BlobService();
+
+            foreach (var ticket in ticketList)
+            {
+                blobService.UploadBlob($"{payload._EventName}", ticket);
+            }
+
+            return new OkObjectResult("Tickets Generated");
 
         }
     }

@@ -10,13 +10,15 @@ namespace TicketsV2.Models
     sealed internal class Ticket
     {
         private readonly Guid _TicketID;
-        private string _EventName;
+        internal string _EventName;
         private DateTime _EventDate;
         private DateTime _EventStartTime;
         private DateTime _EventEndTime;
         private DateTime _TicketExpiration;
+        internal int _TicketAmount;
 
-        public Ticket(string EventName, DateTime EventDate, DateTime EventStartTime, DateTime EventEndTime, DateTime TicketExpiration)
+        public Ticket(string EventName, DateTime EventDate, DateTime EventStartTime, DateTime EventEndTime, DateTime TicketExpiration,
+            int TicketAmount)
         {
             _TicketID = Guid.NewGuid();
             _EventName = EventName;
@@ -24,6 +26,7 @@ namespace TicketsV2.Models
             _EventStartTime = EventStartTime;
             _EventEndTime = EventEndTime;
             _TicketExpiration = TicketExpiration;
+            _TicketAmount = TicketAmount;
         }
     }
 }

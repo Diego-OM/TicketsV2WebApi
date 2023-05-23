@@ -12,12 +12,10 @@ namespace TicketsV2.Services
 {
     internal class QRService: ITicket
     {
-        private static QRCodeGenerator _qrWriter;
-        private static QRCodeData _qrCodeData;
 
         public QRService() 
         {
-            _qrWriter = new QRCodeGenerator();
+            
         }
 
         string ITicket.CreateTicket(Ticket ticket)
@@ -25,17 +23,29 @@ namespace TicketsV2.Services
            return CreateTicket(ticket);
         }
 
+        void ITicket.SaveTicket(List<string> ticketList)
+        {
+            
+        }
+
+
         internal static string CreateTicket(Ticket ticket)
         {
             string payload = JsonConvert.SerializeObject(ticket);
 
-            _qrCodeData = _qrWriter.CreateQrCode("ENCODED TEXT", QRCodeGenerator.ECCLevel.Q);
+            var qrCodeGenerator = new QRCodeGenerator();
 
-            SvgQRCode qrCode = new SvgQRCode(_qrCodeData);
+            var data = qrCodeGenerator.CreateQrCode("ENCODED TEXT", QRCodeGenerator.ECCLevel.Q);
+
+            SvgQRCode qrCode = new SvgQRCode(data);
             
             return qrCode.GetGraphic(1);
         }
 
+        internal static void SaveTicket(List<string> ticketList)
+        {
+
+        }
 
     }
 }

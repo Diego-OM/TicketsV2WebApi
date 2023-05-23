@@ -13,5 +13,7 @@ namespace TicketsV2.Interfaces
     {
         internal string CreateTicket(Ticket ticket);
 
+        internal void SaveTicket(List<string> ticketList);
+
     }
 }
