@@ -18,7 +18,7 @@ namespace TicketsV2.Services
             
         }
 
-        string ITicket.CreateTicket(Ticket ticket)
+        string ITicket.CreateTicket(Tickets ticket)
         {
            return CreateTicket(ticket);
         }
@@ -29,13 +29,13 @@ namespace TicketsV2.Services
         }
 
 
-        internal static string CreateTicket(Ticket ticket)
+        internal static string CreateTicket(Tickets ticket)
         {
             string payload = JsonConvert.SerializeObject(ticket);
 
             var qrCodeGenerator = new QRCodeGenerator();
 
-            var blobPayload = new BlobPayload() { TicketID = Guid.NewGuid(), EventID = Guid.NewGuid(), EventName = ticket._EventName, };
+            var blobPayload = new BlobPayload() { TicketID = ticket.TicketID, EventID = ticket.EventID};
 
             var data = qrCodeGenerator.CreateQrCode(JsonConvert.SerializeObject(blobPayload), QRCodeGenerator.ECCLevel.Q);
 
@@ -44,10 +44,6 @@ namespace TicketsV2.Services
             return qrCode.GetGraphic(3);
         }
 
-        internal static void SaveTicket(List<string> ticketList)
-        {
-
-        }
-
+        
     }
 }

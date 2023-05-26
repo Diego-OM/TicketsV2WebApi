@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,9 @@ namespace TicketsV2
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-          
+            builder.Services.AddDbContext<DBClient>(
+                options => SqlServerDbContextOptionsExtensions.UseSqlServer(options, Environment.GetEnvironmentVariable("SqlConnectionString")));
+
             builder.Services.AddSingleton<ITicket, QRService>();
         }
     }

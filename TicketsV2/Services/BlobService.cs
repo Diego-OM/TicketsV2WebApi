@@ -26,14 +26,16 @@ namespace TicketsV2.Services
 
             return blobContainerClient;
         }
-
-        internal async void UploadBlob(string eventName, string payload)
+        
+        internal async void UploadBlob(string clientID, string eventID, string payload)
         {
-            string clientName = $"testnameclient";
+            string clientName = $"{clientID}-{eventID}";
 
             var blobContainerClient = GetBlobContainerClient(clientName);
 
-            await blobContainerClient.UploadBlobAsync($"{eventName} {Guid.NewGuid()}", new BinaryData(payload));
+            var ticketID = Guid.NewGuid();
+
+            await blobContainerClient.UploadBlobAsync($"{ticketID}", new BinaryData(payload) );
         }
 
         internal async Task<List<string>> GetBlobs(string blobContainerName)
@@ -51,13 +53,12 @@ namespace TicketsV2.Services
             {
                 foreach (BlobItem blobItem in blobPage.Values)
                 {
-                    Console.WriteLine("Blob name: {0}", blobItem.Name);
+                    blobList.Add(blobItem.Name);
                 }
 
-                Console.WriteLine();
             }
 
-            return new List<string>();
+            return blobList;
         }
     }
 }

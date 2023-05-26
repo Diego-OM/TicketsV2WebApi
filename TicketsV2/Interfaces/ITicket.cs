@@ -11,7 +11,7 @@ namespace TicketsV2.Interfaces
 {
     public interface ITicket
     {
-        internal string CreateTicket(Ticket ticket);
+        internal string CreateTicket(Tickets ticket);
 
         internal void SaveTicket(List<string> ticketList);
 

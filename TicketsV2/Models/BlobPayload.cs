@@ -3,8 +3,8 @@ namespace TicketsV2.Models
 {
 	public class BlobPayload
 	{
-		public Guid TicketID { get; set; }
-		public Guid EventID { get; set; }
+		public string TicketID { get; set; }
+		public string EventID { get; set; }
 		public string EventName { get; set; }
 		
 	}

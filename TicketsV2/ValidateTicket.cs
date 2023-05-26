@@ -7,24 +7,36 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using TicketsV2.Models;
 using TicketsV2.Services;
 
 namespace TicketsV2
 {
-    public static class GetTicketAmount
+    public static class ValidateTicket
     {
-        [FunctionName("GetTicketAmount")]
+        [FunctionName("ValidateTicket")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("Get Ticket Amount Executed");
+            log.LogInformation("C# HTTP trigger function processed a request.");
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+            var qRCode = JsonConvert.DeserializeObject<QRCode>(requestBody);
 
             BlobService blobService = new BlobService();
 
-            var blobs = await blobService.GetBlobs("testnameclient");
+            var blobs = await blobService.GetBlobs(qRCode.ClientID);
 
-            return new OkObjectResult(JsonConvert.SerializeObject(blobs.Count));
+
+            foreach (var item in blobs)
+            {
+                var a = item;
+            }
+
+
+            return new OkObjectResult("");
         }
     }
 }
