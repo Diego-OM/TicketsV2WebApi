@@ -50,7 +50,7 @@ namespace TicketsV2
                 result = "Ticket No Valido";
             }
             
-            return new OkObjectResult(result);
+            return new OkObjectResult(JsonConvert.SerializeObject(result));
         }
     }
 }
