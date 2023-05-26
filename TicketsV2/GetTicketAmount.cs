@@ -8,23 +8,39 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TicketsV2.Services;
+using System.Linq;
+using TicketsV2.Models;
+using System.Collections.Generic;
 
 namespace TicketsV2
 {
-    public static class GetTicketAmount
+
+    public class GetTicketAmount
     {
+        private readonly DBClient _dbContext;
+
+        public GetTicketAmount(DBClient dBContext)
+        {
+            _dbContext = dBContext;
+        }
+
         [FunctionName("GetTicketAmount")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("Get Ticket Amount Executed");
 
-            BlobService blobService = new BlobService();
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            var blobs = await blobService.GetBlobs("testnameclient");
+            var payload = JsonConvert.DeserializeObject<Tickets>(requestBody);
 
-            return new OkObjectResult(JsonConvert.SerializeObject(blobs.Count));
+            var query = new List<Tickets>();
+
+            query = _dbContext.Tickets
+                    .Where(t => t.ClientID == payload.ClientID).ToList();
+            
+            return new OkObjectResult(JsonConvert.SerializeObject(query.Count));
         }
     }
 }
