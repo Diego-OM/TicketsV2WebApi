@@ -12,6 +12,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Sockets;
 
 namespace TicketsV2
 {
@@ -36,12 +37,15 @@ namespace TicketsV2
             var payload = JsonConvert.DeserializeObject<Tickets>(requestBody);
 
             var ticketList = new List<string>();
-           
+
+            var ticketGuid = string.Empty;
+            var eventGuid = Guid.NewGuid().ToString();
+            var clientGuid = Guid.NewGuid().ToString();
+
             Event events = new Event();
-            events.EventID = Guid.NewGuid().ToString();
+            events.EventID = eventGuid;
             events.EventName = payload.EventName;
-            
-            events.ClientID = Guid.NewGuid().ToString();
+            events.ClientID = clientGuid;
 
             _dbContext.Event.Add(events);
 
@@ -49,31 +53,53 @@ namespace TicketsV2
 
             Tickets tickets = new Tickets();
 
+            
+
             if (payload.TicketAmount > 1)
             {
                 for (int i = 0; i < payload.TicketAmount; i++)
                 {
-                    ticketList.Add(QRService.CreateTicket(payload));
+                    
+                    payload.ClientID = clientGuid;
+                    payload.EventID = eventGuid;
+                    payload.EventName = events.EventName;
+                    payload.TicketID = Guid.NewGuid().ToString();
+                
+                    tickets.TicketID = payload.TicketID;
+                    tickets.EventID = payload.EventID;
+                    tickets.EventName = payload.EventName;
+                    tickets.ClientID = payload.ClientID;
+                    tickets.StatusID = "New";
+
+                    tickets.QRCode = QRService.CreateTicket(payload);
+
+                    _dbContext.Tickets.Add(tickets);
+                    await _dbContext.SaveChangesAsync();
+
                 }
+
+                
             }
             else
             {
-                ticketList.Add(QRService.CreateTicket(payload));
-            }
+                payload.ClientID = clientGuid;
+                payload.EventID = eventGuid;
+                payload.EventName = events.EventName;
+                payload.TicketID = Guid.NewGuid().ToString();
 
-            foreach (var ticket in ticketList)
-            {
-                tickets.TicketID = Guid.NewGuid().ToString();
-                tickets.EventID = events.EventID;
-                tickets.EventName = events.EventName;
-                tickets.ClientID = events.ClientID;
+                tickets.TicketID = payload.TicketID;
+                tickets.EventID = payload.EventID;
+                tickets.EventName = payload.EventName;
+                tickets.ClientID = payload.ClientID;
                 tickets.StatusID = "New";
 
-                tickets.QRCode = ticket;
-                _dbContext.Tickets.Add(tickets);
+                tickets.QRCode = QRService.CreateTicket(payload);
 
+                _dbContext.Tickets.Add(tickets);
                 await _dbContext.SaveChangesAsync();
             }
+
+            
 
             return new OkObjectResult(JsonConvert.SerializeObject("Tickets Generated"));
 

@@ -9,13 +9,22 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TicketsV2.Models;
 using TicketsV2.Services;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TicketsV2
 {
-    public static class ValidateTicket
+    public  class ValidateTicket
     {
+        private readonly DBClient _dbContext;
+
+        public ValidateTicket(DBClient dBContext)
+        {
+            _dbContext = dBContext;
+        }
+
         [FunctionName("ValidateTicket")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
@@ -23,20 +32,25 @@ namespace TicketsV2
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            var qRCode = JsonConvert.DeserializeObject<QRCode>(requestBody);
+            var payload = JsonConvert.DeserializeObject<Tickets>(requestBody);
 
-            BlobService blobService = new BlobService();
+            var query = new List<Tickets>();
 
-            var blobs = await blobService.GetBlobs(qRCode.ClientID);
+            var result = string.Empty;
 
+            query = _dbContext.Tickets
+                    .Where(t => t.ClientID == payload.ClientID && t.TicketID == payload.TicketID).ToList();
 
-            foreach (var item in blobs)
+            if(query.Count == 1)
             {
-                var a = item;
+                result = "Ticket Valido";
             }
-
-
-            return new OkObjectResult("");
+            else
+            {
+                result = "Ticket No Valido";
+            }
+            
+            return new OkObjectResult(result);
         }
     }
 }

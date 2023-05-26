@@ -35,7 +35,7 @@ namespace TicketsV2.Services
 
             var qrCodeGenerator = new QRCodeGenerator();
 
-            var blobPayload = new BlobPayload() { TicketID = ticket.TicketID, EventID = ticket.EventID};
+            var blobPayload = new BlobPayload() { ClientID = ticket.ClientID, TicketID = ticket.TicketID, EventID = ticket.EventID};
 
             var data = qrCodeGenerator.CreateQrCode(JsonConvert.SerializeObject(blobPayload), QRCodeGenerator.ECCLevel.Q);
 
