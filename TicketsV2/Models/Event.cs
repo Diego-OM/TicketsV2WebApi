@@ -9,6 +9,6 @@ namespace TicketsV2.Services
         public string EventID { get; set; }
         public string EventName { get; set; }
         public string ClientID { get; set; }
-
+        public int TicketAmount { get; set; }
     }
 }

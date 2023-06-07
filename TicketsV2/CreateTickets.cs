@@ -34,18 +34,20 @@ namespace TicketsV2
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            var payload = JsonConvert.DeserializeObject<Tickets>(requestBody);
+            var reqBody = JsonConvert.DeserializeObject<Event>(requestBody);
+
+            var qrPayload = new Tickets();
 
             var ticketList = new List<string>();
 
             var ticketGuid = string.Empty;
             var eventGuid = Guid.NewGuid().ToString();
-            var clientGuid = Guid.NewGuid().ToString();
 
             Event events = new Event();
             events.EventID = eventGuid;
-            events.EventName = payload.EventName;
-            events.ClientID = clientGuid;
+            events.EventName = reqBody.EventName;
+            events.ClientID = reqBody.ClientID;
+            events.TicketAmount = reqBody.TicketAmount;
 
             _dbContext.Event.Add(events);
 
@@ -53,25 +55,25 @@ namespace TicketsV2
 
             Tickets tickets = new Tickets();
 
-            
+            tickets.TicketAmount = reqBody.TicketAmount;
 
-            if (payload.TicketAmount > 1)
+            if (tickets.TicketAmount > 1)
             {
-                for (int i = 0; i < payload.TicketAmount; i++)
+                for (int i = 0; i < reqBody.TicketAmount; i++)
                 {
                     
-                    payload.ClientID = clientGuid;
-                    payload.EventID = eventGuid;
-                    payload.EventName = events.EventName;
-                    payload.TicketID = Guid.NewGuid().ToString();
+                    qrPayload.ClientID = reqBody.ClientID;
+                    qrPayload.EventID = eventGuid;
+                    qrPayload.EventName = events.EventName;
+                    qrPayload.TicketID = Guid.NewGuid().ToString();
                 
-                    tickets.TicketID = payload.TicketID;
-                    tickets.EventID = payload.EventID;
-                    tickets.EventName = payload.EventName;
-                    tickets.ClientID = payload.ClientID;
+                    tickets.TicketID = qrPayload.TicketID;
+                    tickets.EventID = eventGuid;
+                    tickets.EventName = qrPayload.EventName;
+                    tickets.ClientID = qrPayload.ClientID;
                     tickets.StatusID = "New";
 
-                    tickets.QRCode = QRService.CreateTicket(payload);
+                    tickets.QRCode = QRService.CreateTicket(qrPayload);
 
                     _dbContext.Tickets.Add(tickets);
                     await _dbContext.SaveChangesAsync();
@@ -82,18 +84,18 @@ namespace TicketsV2
             }
             else
             {
-                payload.ClientID = clientGuid;
-                payload.EventID = eventGuid;
-                payload.EventName = events.EventName;
-                payload.TicketID = Guid.NewGuid().ToString();
+                qrPayload.ClientID = reqBody.ClientID;
+                qrPayload.EventID = eventGuid;
+                qrPayload.EventName = events.EventName;
+                qrPayload.TicketID = Guid.NewGuid().ToString();
 
-                tickets.TicketID = payload.TicketID;
-                tickets.EventID = payload.EventID;
-                tickets.EventName = payload.EventName;
-                tickets.ClientID = payload.ClientID;
+                tickets.TicketID = qrPayload.TicketID;
+                tickets.EventID = eventGuid;
+                tickets.EventName = qrPayload.EventName;
+                tickets.ClientID = qrPayload.ClientID;
                 tickets.StatusID = "New";
 
-                tickets.QRCode = QRService.CreateTicket(payload);
+                tickets.QRCode = QRService.CreateTicket(qrPayload);
 
                 _dbContext.Tickets.Add(tickets);
                 await _dbContext.SaveChangesAsync();
