@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TicketsV2.Services
 {
-    public class Event
+    public class Events
     {
         [Key]
         public string EventID { get; set; }
