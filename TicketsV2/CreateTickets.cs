@@ -42,8 +42,6 @@ namespace TicketsV2
 
             var custInfo = new CustomerInformation();
 
-            //get Customer Info
-
             var customerInfo = custInfo.GetCustomerInformation(reqBody.ClientID);
 
             var customerId = paymentUtility.GetCustomerID(reqBody.ClientID);
@@ -57,7 +55,6 @@ namespace TicketsV2
             var priceID = customerPlan.Id;
 
             var accessLevel = paymentUtility.CheckAccesslevel(priceID);
-
 
             var eventList = await _dbContext.Event.ToListAsync();
 
@@ -134,7 +131,6 @@ namespace TicketsV2
             else
             {
                 return new OkObjectResult(JsonConvert.SerializeObject("Error While Creating Tickets"));
-
             }
 
             return new OkObjectResult(JsonConvert.SerializeObject("Tickets Generated"));
