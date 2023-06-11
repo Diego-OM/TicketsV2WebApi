@@ -12,7 +12,7 @@ namespace TicketsV2.Services
 			
 		}
 
-		public DbSet<Event> Event { get; set; }
+		public DbSet<EventsT> Event { get; set; }
         public DbSet<Tickets> Tickets { get; set; }
     }
 }

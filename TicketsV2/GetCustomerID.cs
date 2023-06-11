@@ -8,31 +8,30 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Stripe;
-using static QRCoder.PayloadGenerator;
 
 namespace TicketsV2
 {
-    public static class GetMembership
+    public static class GetCustomerID
     {
-        [FunctionName("GetMembership")]
+        [FunctionName("GetCustomerID")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function,"post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("StripeKey");
 
-            string customerId = await new StreamReader(req.Body).ReadToEndAsync();
+            string customerEmail = await new StreamReader(req.Body).ReadToEndAsync();
 
-            var options = new CustomerGetOptions();
+            var options = new CustomerListOptions();
+            options.Email = customerEmail;
+
             var service = new CustomerService();
-            options.AddExpand("subscriptions");
-           
-            var customer = service.Get(customerId, options);
 
-            
-            return new OkObjectResult(customer.Subscriptions.Data);
+            var res = service.List(options);
+
+            return new OkObjectResult(res.Data);
         }
     }
 }

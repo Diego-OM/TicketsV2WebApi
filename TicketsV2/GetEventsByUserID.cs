@@ -35,14 +35,14 @@ namespace TicketsV2
 
             var payload = JsonConvert.DeserializeObject<Client>(requestBody);
 
-            var query = new List<Event>();
+            var query = new List<EventsT>();
 
             query = _dbContext.Event
                     .Where(t => t.ClientID == payload.ClientID).ToList();
 
             var amount = query.Count();
 
-            var result = new Tuple<List<Event>, int>(query, amount);
+            var result = new Tuple<List<EventsT>, int>(query, amount);
 
             return new OkObjectResult(result);
         }
