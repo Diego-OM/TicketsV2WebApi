@@ -31,8 +31,8 @@ namespace TicketsV2
             var productID = requestBody;
             var options = new SessionCreateOptions
             {
-                SuccessUrl = "http://https://nice-wave-07850e810.2.azurestaticapps.net//success",
-                CancelUrl = "http://https://nice-wave-07850e810.2.azurestaticapps.net//failure",
+                SuccessUrl = "http://https://nice-wave-07850e810.2.azurestaticapps.net/success",
+                CancelUrl = "http://https://nice-wave-07850e810.2.azurestaticapps.net/failure",
                 PaymentMethodTypes = new List<string>
                 {
                     "card",
