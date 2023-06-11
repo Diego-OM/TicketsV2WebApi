@@ -40,6 +40,8 @@ namespace TicketsV2
 
             var paymentUtility = new PaymentUtility();
 
+            StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("StripeKey");
+
             var custInfo = new CustomerInformation();
 
             var customerInfo = custInfo.GetCustomerInformation(reqBody.ClientID);
