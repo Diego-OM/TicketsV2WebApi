@@ -38,7 +38,7 @@ namespace TicketsV2
 
             var options = new SessionCreateOptions
             {
-                SuccessUrl = $"{origin}success",
+                SuccessUrl = $"{origin}",
                 CancelUrl = $"{origin}failure",
                 CustomerEmail = "diego.ochoa.maldonado@hotmail.com",
                 PaymentMethodTypes = new List<string>
