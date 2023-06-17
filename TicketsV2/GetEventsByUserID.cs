@@ -40,11 +40,8 @@ namespace TicketsV2
             query = _dbContext.Event
                     .Where(t => t.ClientID == payload.ClientID).ToList();
 
-            var amount = query.Count();
 
-            var result = new Tuple<List<EventsT>, int>(query, amount);
-
-            return new OkObjectResult(result);
+            return new OkObjectResult(query);
         }
     }
 }

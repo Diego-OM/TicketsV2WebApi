@@ -12,6 +12,10 @@ using Stripe.Checkout;
 using Azure;
 using System.Collections.Generic;
 using Azure.Core;
+using static System.Net.WebRequestMethods;
+using Stripe.Terminal;
+using System.Net;
+using System.Net.Http;
 
 namespace TicketsV2
 {
@@ -29,10 +33,14 @@ namespace TicketsV2
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
             var productID = requestBody;
+
+            var origin = req.Headers["Referer"].ToString();
+
             var options = new SessionCreateOptions
             {
-                SuccessUrl = "https://nice-wave-07850e810.2.azurestaticapps.net/success",
-                CancelUrl = "https://nice-wave-07850e810.2.azurestaticapps.net/failure",
+                SuccessUrl = $"{origin}success",
+                CancelUrl = $"{origin}failure",
+                CustomerEmail = "diego.ochoa.maldonado@hotmail.com",
                 PaymentMethodTypes = new List<string>
                 {
                     "card",
@@ -52,9 +60,6 @@ namespace TicketsV2
             try
             {
                 var session = await service.CreateAsync(options);
-
-                req.HttpContext.Response.Headers.Add("Location", session.Url);
-
 
                 return new OkObjectResult(JsonConvert.SerializeObject(session.Url));
             }

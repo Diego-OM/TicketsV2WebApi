@@ -40,19 +40,15 @@ namespace TicketsV2
 
             var paymentUtility = new PaymentUtility();
 
-            StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("StripeKey");
-
             var custInfo = new CustomerInformation();
 
-            var customerInfo = custInfo.GetCustomerInformation(reqBody.ClientID);
+            var customerID = await paymentUtility.GetCustomerID(reqBody.ClientID);
 
-            var customerId = paymentUtility.GetCustomerID(reqBody.ClientID);
-
-            var membership = paymentUtility.GetMembership(customerId);
-
+            var membership = await paymentUtility.GetMembership(customerID);
+            
             var isMembershipActive = membership.Data[0].Status;
 
-            var customerPlan = paymentUtility.GetPlanIDByCustomerID(customerId);
+            var customerPlan = await paymentUtility.GetPlanIDByCustomerID(customerID);
 
             var priceID = customerPlan.Id;
 
@@ -132,7 +128,7 @@ namespace TicketsV2
         }
             else
             {
-                return new OkObjectResult(JsonConvert.SerializeObject("Error While Creating Tickets"));
+                return new OkObjectResult(JsonConvert.SerializeObject("Subscription Reached Event Amount Limit"));
             }
 
             return new OkObjectResult(JsonConvert.SerializeObject("Tickets Generated"));

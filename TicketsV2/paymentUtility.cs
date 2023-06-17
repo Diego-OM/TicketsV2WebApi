@@ -10,26 +10,22 @@ namespace TicketsV2
 	{
 		public PaymentUtility()
 		{
-            StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("StripeKey");
-
+            
         }
 
-        public StripeList<Subscription> GetMembership(string customerId)
+        public async Task<StripeList<Subscription>> GetMembership(string customerId)
         {
-            StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("StripeKey");
-
-            
             var options = new CustomerGetOptions();
             var service = new CustomerService();
             options.AddExpand("subscriptions");
 
-            var customer = service.Get(customerId, options);
+            var customer = await service.GetAsync(customerId, options);
 
             return customer.Subscriptions;
 
         }
 
-        public bool UsersExists(string email)
+        public async Task<bool> UsersExists(string email)
         {
             
             var options = new CustomerListOptions();
@@ -38,7 +34,7 @@ namespace TicketsV2
 
             var service = new CustomerService();
 
-            var list = service.List(options);
+            var list = await service.ListAsync(options);
 
             if (list.Data.Count > 1)
             {
@@ -51,36 +47,38 @@ namespace TicketsV2
 
         }
 
-        public string GetCustomerID (string customerEmail)
+        public async Task<string> GetCustomerID(string customerEmail)
         {
+            StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("StripeKey");
+
             var options = new CustomerListOptions();
+
             options.Email = customerEmail;
 
             var service = new CustomerService();
 
-            var customer = service.List(options);
+            var result = await service.ListAsync(options);
 
-            if (customer.Data.Count > 0)
+            if(result.Data.Count > 0)
             {
-                return customer.Data[0].Id;
+                return result.Data[0].Id;
             }
-
-            else return null;
-
+            else
+            {
+                return "Customer ID Not Found";
+            }
            
         }
 
-        public Plan GetPlanIDByCustomerID(string customerID)
+        public async Task<Plan> GetPlanIDByCustomerID(string customerID)
         {
-
             var options = new CustomerGetOptions();
             var service = new CustomerService();
             options.AddExpand("subscriptions");
 
-            var customer = service.Get(customerID, options);
+            var customer = await service.GetAsync(customerID, options);
 
             return customer.Subscriptions.Data[0].Items.Data[0].Plan;
-
         }
 
         public AccessLevel CheckAccesslevel(string priceID)
