@@ -38,7 +38,7 @@ namespace TicketsV2
 
             var options = new SessionCreateOptions
             {
-                SuccessUrl = $"{origin}",
+                SuccessUrl = $"{origin}success",
                 CancelUrl = $"{origin}failure",
                 CustomerEmail = "diego.ochoa.maldonado@hotmail.com",
                 PaymentMethodTypes = new List<string>
@@ -61,6 +61,7 @@ namespace TicketsV2
             {
                 var session = await service.CreateAsync(options);
 
+                req.HttpContext.Response.Headers.Add("Location", origin);
                 return new OkObjectResult(JsonConvert.SerializeObject(session.Url));
             }
             catch (Exception ex)
