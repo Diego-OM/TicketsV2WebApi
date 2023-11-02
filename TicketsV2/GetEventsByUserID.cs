@@ -26,7 +26,7 @@ namespace TicketsV2
 
         [FunctionName("GetEventsByUserID")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("Get Events By User ID");

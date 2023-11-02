@@ -26,7 +26,7 @@ namespace TicketsV2
 
         [FunctionName("GetTicketAmount")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("Get Ticket Amount Executed");
