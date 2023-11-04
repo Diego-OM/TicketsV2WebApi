@@ -79,7 +79,7 @@ namespace TicketsV2
                 updateService.Update(subscriptions.Data[0].Id, updateOptions);
 
                 var options3 = new SessionCreateOptions
-            {
+                {
                 SuccessUrl = $"{origin}success",
                 CancelUrl = $"{origin}failure",
                 CustomerEmail = "diego.ochoa.maldonado@hotmail.com",
@@ -96,7 +96,7 @@ namespace TicketsV2
                             Quantity = 1,
                         }
                     }
-            };
+                };
                 var service3 = new SessionService();
                 var session3 = await service3.CreateAsync(options3);
 
