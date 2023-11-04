@@ -45,8 +45,9 @@ namespace TicketsV2
             var customerID = await paymentUtility.GetCustomerID(reqBody.ClientID);
 
             var membership = await paymentUtility.GetMembership(customerID);
-            
-            var isMembershipActive = membership.Data[0].Status;
+
+            //this needs to validate if there is data, if not will fail
+            var isMembershipActive = membership.Data[0].Status; //index out of bounds , empty array
 
             var customerPlan = await paymentUtility.GetPlanIDByCustomerID(customerID);
 

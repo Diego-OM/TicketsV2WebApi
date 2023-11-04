@@ -35,9 +35,7 @@ namespace TicketsV2
 
             var payload = JsonConvert.DeserializeObject<Client>(requestBody);
 
-            var query = new List<EventsT>();
-
-            query = _dbContext.Event
+            var query = _dbContext.Event
                     .Where(t => t.ClientID == payload.ClientID).ToList();
 
 
